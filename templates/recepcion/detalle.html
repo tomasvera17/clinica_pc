@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'listado_equipos' %}">Listado de Equipos</a></li>
+<li class="breadcrumb-item active">Detalle</li>
+{% endblock %}
+
+{% block page_title_text %}Detalle del Equipo{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    {% if equipo %}
+    <div class="card shadow">
+      <div class="card-header bg-light">
+        <h5 class="card-title mb-0">Información del Equipo</h5>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">ID:</div>
+          <div class="col-sm-8">{{ equipo.id }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Cliente:</div>
+          <div class="col-sm-8">{{ equipo.nombre_cliente }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Tipo de Equipo:</div>
+          <div class="col-sm-8">{{ equipo.tipo_equipo }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Problema Informado:</div>
+          <div class="col-sm-8">{{ equipo.problema }}</div>
+        </div>
+      </div>
+      <div class="card-footer bg-white">
+        <a href="{% url 'listado_equipos' %}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Volver al Listado
+        </a>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensaje_error }}
+    </div>
+    <a href="{% url 'listado_equipos' %}" class="btn btn-secondary">
+      <i class="bi bi-arrow-left me-1"></i>Volver al Listado
+    </a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
