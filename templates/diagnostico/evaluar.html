@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'listado_diagnosticos' %}">Diagnósticos</a></li>
+<li class="breadcrumb-item active">Evaluar Diagnóstico</li>
+{% endblock %}
+
+{% block page_title_text %}Evaluar Diagnóstico Técnico{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card shadow">
+      <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-clipboard-check me-2"></i>Registro de Diagnóstico
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          <strong>Nota:</strong> Solo se muestran equipos que han sido asignados a estudiantes y están pendientes de diagnóstico.
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label for="equipo_id" class="form-label">Seleccionar Equipo Asignado</label>
+              {% if equipos %}
+              <select class="form-select" id="equipo_id" name="equipo_id" required>
+                <option value="" selected disabled>Seleccione un equipo...</option>
+                {% for equipo in equipos %}
+                <option value="{{ equipo.id }}">
+                  {{ equipo.nombre_cliente }} - {{ equipo.tipo_equipo }} (ID: {{ equipo.id }})
+                </option>
+                {% endfor %}
+              </select>
+              <div class="form-text">Equipos asignados pendientes de diagnóstico</div>
+              {% else %}
+              <div class="alert alert-warning">
+                <i class="bi bi-check-circle me-2"></i>
+                No hay equipos pendientes de diagnóstico. Todos los diagnósticos están completos o no hay equipos asignados.
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label for="diagnostico" class="form-label">Diagnóstico Técnico</label>
+            <textarea class="form-control" id="diagnostico" name="diagnostico" 
+                      rows="4" placeholder="Describa el problema encontrado..." required></textarea>
+            <div class="form-text">Detalle técnico del problema identificado</div>
+          </div>
+          
+          <div class="mb-4">
+            <label for="solucion" class="form-label">Solución Aplicada</label>
+            <textarea class="form-control" id="solucion" name="solucion" 
+                      rows="4" placeholder="Describa la solución implementada..." required></textarea>
+            <div class="form-text">Procedimientos técnicos realizados</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <label for="tipo_solucion" class="form-label">Tipo de Solución</label>
+              <select class="form-select" id="tipo_solucion" name="tipo_solucion" required>
+                <option value="" selected disabled>Seleccione el tipo...</option>
+                <option value="Correctiva">Correctiva</option>
+                <option value="Preventiva">Preventiva</option>
+                <option value="Predictiva">Predictiva</option>
+              </select>
+              <div class="form-text">Clasificación de la solución aplicada</div>
+            </div>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success btn-lg" {% if not equipos %}disabled{% endif %}>
+              <i class="bi bi-check-circle me-2"></i>Registrar Diagnóstico
+            </button>
+          </div>
+        </form>
+        {% if mensaje_exito %}
+        <div class="alert alert-success mt-4" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <strong>¡Perfecto!</strong> {{ mensaje_exito }}
+        </div>
+        {% endif %}
+        {% if mensaje_error %}
+        <div class="alert alert-danger mt-4" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <strong>Error:</strong> {{ mensaje_error }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+        <a href="{% url 'registrar_equipo' %}" class="btn btn-success me-md-2">
+          <i class="bi bi-plus-circle me-1"></i>Nuevo Equipo
+        </a>
+        <a href="{% url 'asignar_diagnostico' %}" class="btn btn-primary me-md-2">
+          <i class="bi bi-person-plus me-1"></i>Asignar Equipo
+        </a>
+        <a href="{% url 'listado_diagnosticos' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-list-ul me-1"></i>Ver Diagnósticos
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
