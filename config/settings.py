@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'login',
     'recepcion',
     'diagnostico',
+    'entrega',
 ]
 
 MIDDLEWARE = [
