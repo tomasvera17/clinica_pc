@@ -56,4 +56,22 @@
     {% endif %}
   </div>
 </div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-arrow-right-circle me-2"></i>Próximo Paso
+        </h5>
+      </div>
+      <div class="card-body text-center">
+        <p class="card-text">¿Deseas diagnosticar los equipos recibidos?</p>
+        <a href="{% url 'asignar_diagnostico' %}" class="btn btn-success btn-lg">
+          <i class="bi bi-tools me-2"></i>Ir a Diagnóstico de Equipos
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
