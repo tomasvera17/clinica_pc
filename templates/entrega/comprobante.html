@@ -136,14 +136,6 @@
       </div>
     </div>
 
-    <div class="mt-4">
-      <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-        <a href="{% url 'verificar_estado' %}" class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left me-1"></i>Volver a Verificación
-        </a>
-      </div>
-    </div>
-
     {% elif nombre_buscado %}
     <div class="alert alert-warning mt-4">
       <i class="bi bi-exclamation-triangle me-2"></i>
@@ -157,6 +149,13 @@
       Ingrese el nombre de un cliente para generar su comprobante de entrega.
     </div>
     {% endif %}
+    <div class="mt-4">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+        <a href="{% url 'verificar_estado' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Volver a Verificación
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

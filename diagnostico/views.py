@@ -12,15 +12,15 @@ def asignar_diagnostico(request):
     equipos_disponibles = [eq for eq in equipos_recibidos if eq['id'] not in equipos_asignados_ids]
     
     if request.method == 'GET':
-        estudiante = request.GET.get('estudiante')
+        tecnico = request.GET.get('tecnico')
         equipo_id = request.GET.get('equipo_id')
         
-        if estudiante and equipo_id:
+        if tecnico and equipo_id:
             equipo = next((eq for eq in equipos_recibidos if eq['id'] == int(equipo_id)), None)
             
             if equipo:
                 diagnostico = {
-                    'estudiante': estudiante,
+                    'tecnico': tecnico,
                     'equipo': equipo,
                     'diagnostico': '',
                     'solucion': '',
@@ -35,7 +35,7 @@ def asignar_diagnostico(request):
                 return render(request, 'diagnostico/asignar.html', {
                     'equipos': equipos_disponibles,
                     'diagnosticos_realizados': diagnosticos_realizados, 
-                    'mensaje_exito': f'Equipo de {equipo["nombre_cliente"]} asignado a {estudiante} correctamente.'
+                    'mensaje_exito': f'Equipo de {equipo["nombre_cliente"]} asignado a {tecnico} correctamente.'
                 })
     
     return render(request, 'diagnostico/asignar.html', {
@@ -84,6 +84,7 @@ def evaluar_diagnostico(request):
 
 @proteger_vista
 def listado_diagnosticos(request):
+    diagnosticos_completos = [diag for diag in diagnosticos_realizados if diag['diagnostico']]
     return render(request, 'diagnostico/listado.html', {
-        'diagnosticos': diagnosticos_realizados
+        'diagnosticos': diagnosticos_completos
     })

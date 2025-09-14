@@ -86,10 +86,7 @@
         {% endif %}
 
         <div class="mt-4">
-          <div class="d-grid gap-2 d-md-flex">
-            <a href="{% url 'reporte_entrega' %}" class="btn btn-success me-md-2">
-              <i class="bi bi-clipboard-check me-1"></i>Registrar Estado de Entrega
-            </a>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-center">
             <a href="{% url 'comprobante_entrega' %}?nombre_cliente={{ equipo.nombre_cliente }}" class="btn btn-outline-primary">
               <i class="bi bi-receipt me-1"></i>Generar Comprobante
             </a>
@@ -108,7 +105,7 @@
     <div class="mt-4">
       <div class="d-grid gap-2 d-md-flex justify-content-md-center">
         <a href="{% url 'reporte_entrega' %}" class="btn btn-outline-success me-md-2">
-          <i class="bi bi-clipboard-data me-1"></i>Registrar Entrega
+          <i class="bi bi-clipboard-data me-1"></i>Registrar Estado de Entrega
         </a>
         <a href="{% url 'listado_diagnosticos' %}" class="btn btn-outline-secondary">
           <i class="bi bi-arrow-left me-1"></i>Volver a Diagnósticos
