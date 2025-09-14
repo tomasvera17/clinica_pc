@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'verificar_estado' %}">Entrega</a></li>
+<li class="breadcrumb-item active">Comprobante de Entrega</li>
+{% endblock %}
+
+{% block page_title_text %}Comprobante de Entrega{% endblock %}
+
+{% block extra_head %}
+<style>
+  .comprobante {
+    border: 2px solid #000;
+    padding: 25px;
+    margin: 20px 0;
+    background: white;
+  }
+  .comprobante-header {
+    border-bottom: 2px solid #000;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  .comprobante-footer {
+    border-top: 2px solid #000;
+    padding-top: 15px;
+    margin-top: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <div class="card shadow">
+      <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-receipt me-2"></i>Generador de Comprobantes
+        </h5>
+      </div>
+      <div class="card-body">
+        <form method="get">
+          <div class="mb-4">
+            <label for="nombre_cliente" class="form-label">Nombre del Cliente</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="nombre_cliente" name="nombre_cliente" 
+                     placeholder="Ej: Juan Pérez" value="{{ nombre_buscado }}">
+              <button type="submit" class="btn btn-info">
+                <i class="bi bi-search me-1"></i>Buscar
+              </button>
+            </div>
+            <div class="form-text">Ingrese el nombre del cliente para generar su comprobante</div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if equipo %}
+    <div class="comprobante mt-4">
+      <div class="comprobante-header text-center">
+        <h2>Clínica del PC - INACAP</h2>
+        <h4>Comprobante de Servicio Técnico</h4>
+        <p class="mb-0">Sistema de Gestión de Equipos Tecnológicos</p>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Fecha de Emisión:</strong> {{ fecha_actual }}</p>
+          <p><strong>N° de Comprobante:</strong> CPE-{{ equipo.id }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Cliente:</strong> {{ equipo.nombre_cliente }}</p>
+          <p><strong>Equipo:</strong> {{ equipo.tipo_equipo }}</p>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <h5>Detalles del Servicio</h5>
+        <table class="table table-bordered">
+          <tr>
+            <th>Problema Reportado</th>
+            <td>{{ equipo.problema }}</td>
+          </tr>
+          {% if diagnostico %}
+          <tr>
+            <th>Diagnóstico Técnico</th>
+            <td>{{ diagnostico.diagnostico }}</td>
+          </tr>
+          <tr>
+            <th>Solución Aplicada</th>
+            <td>{{ diagnostico.solucion }}</td>
+          </tr>
+          <tr>
+            <th>Tipo de Solución</th>
+            <td>{{ diagnostico.tipo_solucion }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <th>Diagnóstico</th>
+            <td class="text-warning">En proceso de diagnóstico</td>
+          </tr>
+          {% endif %}
+          <tr>
+            <th>Estado Final</th>
+            <td>
+              <strong>
+                {% if equipo.estado_final %}
+                  {{ equipo.estado_final }}
+                {% else %}
+                  En proceso
+                {% endif %}
+              </strong>
+            </td>
+          </tr>
+          {% if equipo.observaciones %}
+          <tr>
+            <th>Observaciones</th>
+            <td>{{ equipo.observaciones }}</td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+
+      <div class="comprobante-footer">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Responsable de Entrega:</strong> ___________________</p>
+          </div>
+          <div class="col-md-6 text-end">
+            <p><strong>Firma del Cliente:</strong> ___________________</p>
+          </div>
+        </div>
+        <div class="text-center mt-3">
+          <p class="mb-0">¡Gracias por confiar en nuestro servicio!</p>
+          <small>Clínica del PC - INACAP © 2025</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+        <a href="{% url 'verificar_estado' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Volver a Verificación
+        </a>
+      </div>
+    </div>
+
+    {% elif nombre_buscado %}
+    <div class="alert alert-warning mt-4">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      No se encontró ningún equipo para el cliente "{{ nombre_buscado }}"
+    </div>
+    {% endif %}
+
+    {% if not equipo and not nombre_buscado %}
+    <div class="alert alert-info mt-4">
+      <i class="bi bi-info-circle me-2"></i>
+      Ingrese el nombre de un cliente para generar su comprobante de entrega.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
