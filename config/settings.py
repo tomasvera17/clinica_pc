@@ -79,6 +79,13 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'login.Usuario'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+LOGIN_URL = '/'  # URL de login
+LOGIN_REDIRECT_URL = '/recepcion/registrar/'  # URL después del login
+LOGOUT_REDIRECT_URL = '/'  # URL después del logout
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
