@@ -1,50 +1,45 @@
-from django.shortcuts import render, redirect
-from functools import wraps
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Cliente, Equipo
+from .forms import ClienteForm, EquipoForm
 
-def proteger_vista(func):
-    @wraps(func)
-    def wrapper(request, *args, **kwargs):
-        if not request.session.get('autenticado'):
-            return redirect('/')
-        return func(request, *args, **kwargs)
-    return wrapper
-equipos_recibidos = []
-
-@proteger_vista
+@login_required
 def registrar_equipo(request):
     if request.method == 'POST':
-        nombre_cliente = request.POST.get('nombre_cliente')
-        tipo_equipo = request.POST.get('tipo_equipo')
-        problema = request.POST.get('problema')
-        
-        equipo = {
-            'nombre_cliente': nombre_cliente,
-            'tipo_equipo': tipo_equipo,
-            'problema': problema,
-            'id': len(equipos_recibidos) + 1
-        }
-        
-        equipos_recibidos.append(equipo)
-        
-        return render(request, 'recepcion/registrar.html', {
-            'mensaje_exito': f'Equipo de {nombre_cliente} registrado correctamente.'
-        })
-    
-    return render(request, 'recepcion/registrar.html')
+        # Primero manejar el formulario de cliente
+        cliente_form = ClienteForm(request.POST)
+        equipo_form = EquipoForm(request.POST)
 
-@proteger_vista
-def listado_equipos(request):
-    return render(request, 'recepcion/listado.html', {
-        'equipos': equipos_recibidos
+        if cliente_form.is_valid() and equipo_form.is_valid():
+            # Guardar el cliente
+            cliente = cliente_form.save()
+
+
+            equipo = equipo_form.save(commit=False)
+            equipo.cliente = cliente
+            equipo.recepcionista = request.user
+            equipo.save()
+
+            messages.success(request, f'Equipo de {cliente.nombre} registrado correctamente.')
+            return redirect('recepcion:listado_equipos')
+    else:
+        cliente_form = ClienteForm()
+        equipo_form = EquipoForm()
+
+    return render(request, 'recepcion/registrar.html', {
+        'cliente_form': cliente_form,
+        'equipo_form': equipo_form
     })
 
-@proteger_vista
-def detalle_equipo(request, nombre):
-    equipo = next((eq for eq in equipos_recibidos if eq['nombre_cliente'] == nombre), None)
-    
-    if equipo:
-        return render(request, 'recepcion/detalle.html', {'equipo': equipo})
-    else:
-        return render(request, 'recepcion/detalle.html', {
-            'mensaje_error': 'Equipo no encontrado.'
-        })
+@login_required
+def listado_equipos(request):
+    equipos = Equipo.objects.all().order_by('-fecha_recepcion')
+    return render(request, 'recepcion/listado.html', {
+        'equipos': equipos
+    })
+
+@login_required
+def detalle_equipo(request, id):
+    equipo = get_object_or_404(Equipo, id=id)
+    return render(request, 'recepcion/detalle.html', {'equipo': equipo})

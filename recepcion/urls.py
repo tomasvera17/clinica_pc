@@ -4,5 +4,5 @@ app_name = 'recepcion'
 urlpatterns = [
     path('registrar/', registrar_equipo, name='registrar_equipo'),
     path('listado/', listado_equipos, name='listado_equipos'),
-    path('detalle/<str:nombre>/', detalle_equipo, name='detalle_equipo'),
+    path('detalle/<int:id>/', detalle_equipo, name='detalle_equipo'),
 ]

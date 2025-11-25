@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect
-from recepcion.views import proteger_vista
 
 diagnosticos_realizados = []
 
-@proteger_vista
 def asignar_diagnostico(request):
     from recepcion.views import equipos_recibidos
     
@@ -43,7 +41,7 @@ def asignar_diagnostico(request):
         'diagnosticos_realizados': diagnosticos_realizados 
     })
 
-@proteger_vista
+
 def evaluar_diagnostico(request):
     equipos_asignados_sin_diagnostico = []
     for diag in diagnosticos_realizados:
@@ -82,7 +80,6 @@ def evaluar_diagnostico(request):
         'equipos': equipos_asignados_sin_diagnostico
     })
 
-@proteger_vista
 def listado_diagnosticos(request):
     diagnosticos_completos = [diag for diag in diagnosticos_realizados if diag['diagnostico']]
     return render(request, 'diagnostico/listado.html', {
