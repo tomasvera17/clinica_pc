@@ -1,10 +1,8 @@
 from django.shortcuts import render
-from recepcion.views import proteger_vista
 from diagnostico.views import diagnosticos_realizados
 from datetime import datetime
 import pytz
 
-@proteger_vista
 def verificar_estado(request):
     from recepcion.views import equipos_recibidos
     
@@ -24,7 +22,6 @@ def verificar_estado(request):
         'nombre_buscado': nombre_cliente
     })
 
-@proteger_vista
 def reporte_entrega(request):
     from recepcion.views import equipos_recibidos
     
@@ -48,7 +45,6 @@ def reporte_entrega(request):
         'equipos': equipos_recibidos
     })
 
-@proteger_vista
 def comprobante_entrega(request):
     from recepcion.views import equipos_recibidos
     

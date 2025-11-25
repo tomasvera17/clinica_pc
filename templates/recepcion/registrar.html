@@ -8,33 +8,80 @@
 
 {% block content %}
 <div class="row">
-  <div class="col-md-8 mx-auto">
+  <div class="col-md-10 mx-auto">
     <div class="card shadow">
       <div class="card-body">
         <form method="post">
           {% csrf_token %}
           
-          <div class="row mb-3">
+          <h5 class="card-title mb-4">Datos del Cliente</h5>
+          <div class="row mb-4">
             <div class="col-md-6">
-              <label for="nombre_cliente" class="form-label">Nombre del Cliente</label>
-              <input type="text" class="form-control" id="nombre_cliente" name="nombre_cliente" required>
+              {{ cliente_form.nombre.label_tag }}
+              {{ cliente_form.nombre }}
+              {% if cliente_form.nombre.errors %}
+                <div class="text-danger">{{ cliente_form.nombre.errors }}</div>
+              {% endif %}
             </div>
             <div class="col-md-6">
-              <label for="tipo_equipo" class="form-label">Tipo de Equipo</label>
-              <select class="form-select" id="tipo_equipo" name="tipo_equipo" required>
-                <option value="" selected disabled>Seleccione...</option>
-                <option value="Laptop">Laptop</option>
-                <option value="Desktop">Desktop</option>
-                <option value="Tablet">Tablet</option>
-                <option value="Celular">Celular</option>
-                <option value="Impresora">Impresora</option>
-              </select>
+              {{ cliente_form.email.label_tag }}
+              {{ cliente_form.email }}
+              {% if cliente_form.email.errors %}
+                <div class="text-danger">{{ cliente_form.email.errors }}</div>
+              {% endif %}
             </div>
           </div>
           
-          <div class="mb-3">
-            <label for="problema" class="form-label">Problema Informado</label>
-            <textarea class="form-control" id="problema" name="problema" rows="4" required></textarea>
+          <div class="row mb-4">
+            <div class="col-md-6">
+              {{ cliente_form.telefono.label_tag }}
+              {{ cliente_form.telefono }}
+              {% if cliente_form.telefono.errors %}
+                <div class="text-danger">{{ cliente_form.telefono.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              {{ cliente_form.direccion.label_tag }}
+              {{ cliente_form.direccion }}
+              {% if cliente_form.direccion.errors %}
+                <div class="text-danger">{{ cliente_form.direccion.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <hr class="my-4">
+          
+          <h5 class="card-title mb-4">Datos del Equipo</h5>
+          <div class="row mb-4">
+            <div class="col-md-4">
+              {{ equipo_form.tipo_equipo.label_tag }}
+              {{ equipo_form.tipo_equipo }}
+              {% if equipo_form.tipo_equipo.errors %}
+                <div class="text-danger">{{ equipo_form.tipo_equipo.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              {{ equipo_form.marca.label_tag }}
+              {{ equipo_form.marca }}
+              {% if equipo_form.marca.errors %}
+                <div class="text-danger">{{ equipo_form.marca.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              {{ equipo_form.modelo.label_tag }}
+              {{ equipo_form.modelo }}
+              {% if equipo_form.modelo.errors %}
+                <div class="text-danger">{{ equipo_form.modelo.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            {{ equipo_form.descripcion_problema.label_tag }}
+            {{ equipo_form.descripcion_problema }}
+            {% if equipo_form.descripcion_problema.errors %}
+              <div class="text-danger">{{ equipo_form.descripcion_problema.errors }}</div>
+            {% endif %}
           </div>
           
           <div class="d-grid">
@@ -42,39 +89,42 @@
           </div>
         </form>
         
-        {% if mensaje_exito %}
-        <div class="alert alert-success mt-4" role="alert">
-          <i class="bi bi-check-circle-fill me-2"></i>{{ mensaje_exito }}
-        </div>
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-success mt-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+          </div>
+          {% endfor %}
         {% endif %}
       </div>
     </div>
-      <div class="row mt-4">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body text-center">
-              <h5 class="card-title">
-                <i class="bi bi-list-ul me-2"></i>Ver Equipos
-              </h5>
-              <a href="{% url 'listado_equipos' %}" class="btn btn-outline-primary">
-                Ver Listado Completo
-              </a>
-            </div>
+    
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">
+              <i class="bi bi-list-ul me-2"></i>Ver Equipos
+            </h5>
+            <a href="{% url 'recepcion:listado_equipos' %}" class="btn btn-outline-primary">
+              Ver Listado Completo
+            </a>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body text-center">
-              <h5 class="card-title">
-                <i class="bi bi-tools me-2"></i>Diagnosticar
-              </h5>
-              <a href="{% url 'asignar_diagnostico' %}" class="btn btn-outline-success">
-                Ir a Diagnóstico
-              </a>
-            </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">
+              <i class="bi bi-tools me-2"></i>Diagnosticar
+            </h5>
+            <a href="#" class="btn btn-outline-success">
+              Ir a DiagnÃ³stico
+            </a>
           </div>
         </div>
-      </div> 
+      </div>
+    </div> 
   </div>
 </div>
 {% endblock %}
