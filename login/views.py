@@ -4,6 +4,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import RegistroUsuarioForm
 
+@login_required
+def dashboard(request):
+    from recepcion.models import Equipo
+    from diagnostico.models import Diagnostico
+    from entrega.models import Entrega
+    from django.contrib.auth import get_user_model
+    
+    User = get_user_model()
+    
+    context = {
+        'equipos_count': Equipo.objects.count(),
+        'diagnosticos_pendientes_count': Diagnostico.objects.filter(descripcion_diagnostico='').count(),
+        'entregas_count': Entrega.objects.count(),
+        'tecnicos_count': User.objects.filter(tipo_usuario='tecnico').count(),
+        'ultimos_equipos': Equipo.objects.all().order_by('-fecha_recepcion')[:5]
+    }
+    
+    return render(request, 'dashboard.html', context)
+
 def vista_login(request):
     mensaje_error = None
     
@@ -11,14 +30,13 @@ def vista_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         
-        # Usar el sistema de autenticación de Django
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
             login(request, user)
-            messages.success(request, f'Bienvenido, {user.username}!')
-            # Redirigir según el tipo de usuario si es necesario
-            return redirect('recepcion:registrar_equipo')
+            messages.success(request, f'Bienvenido {user.username}!')
+            # Redirección final al dashboard
+            return redirect('login:dashboard')  # ← Esta es la correcta
         else:
             mensaje_error = "Credenciales incorrectas. Intente nuevamente."
     

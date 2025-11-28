@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Detalle del Diagnóstico{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card shadow">
+      <div class="card-header bg-light">
+        <h5 class="card-title mb-0">Información del Diagnóstico</h5>
+      </div>
+      <div class="card-body">
+        <h6 class="text-primary mb-3">Datos del Equipo</h6>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Cliente:</div>
+          <div class="col-sm-8">{{ diagnostico.equipo.cliente.nombre }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Equipo:</div>
+          <div class="col-sm-8">{{ diagnostico.equipo.tipo_equipo }} {{ diagnostico.equipo.marca }} {{ diagnostico.equipo.modelo }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Problema Reportado:</div>
+          <div class="col-sm-8">{{ diagnostico.equipo.descripcion_problema }}</div>
+        </div>
+        
+        <hr>
+        
+        <h6 class="text-primary mb-3">Información del Diagnóstico</h6>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Técnico:</div>
+          <div class="col-sm-8">{{ diagnostico.tecnico.username }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Fecha Diagnóstico:</div>
+          <div class="col-sm-8">{{ diagnostico.fecha_diagnostico|date:"d/m/Y H:i" }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Diagnóstico Técnico:</div>
+          <div class="col-sm-8">{{ diagnostico.descripcion_diagnostico }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Solución Aplicada:</div>
+          <div class="col-sm-8">{{ diagnostico.solucion_propuesta }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-4 fw-bold">Tipo de Solución:</div>
+          <div class="col-sm-8">
+            {% if diagnostico.tipo_solucion == "correctiva" %}
+              <span class="badge bg-danger">Correctiva</span>
+            {% elif diagnostico.tipo_solucion == "preventiva" %}
+              <span class="badge bg-warning text-dark">Preventiva</span>
+            {% else %}
+              <span class="badge bg-info">Predictiva</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="card-footer bg-white">
+        <a href="{% url 'diagnostico:listado_diagnosticos' %}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Volver al Listado
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

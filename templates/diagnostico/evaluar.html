@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 
-{% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'listado_diagnosticos' %}">Diagnósticos</a></li>
-<li class="breadcrumb-item active">Evaluar Diagnóstico</li>
+{% block page_title_text %}
+{% if diagnostico and diagnostico.descripcion_diagnostico %}Editar Diagnóstico{% else %}Evaluar Diagnóstico Técnico{% endif %}
 {% endblock %}
-
-{% block page_title_text %}Evaluar Diagnóstico Técnico{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -13,89 +10,64 @@
     <div class="card shadow">
       <div class="card-header bg-info text-white">
         <h5 class="card-title mb-0">
-          <i class="bi bi-clipboard-check me-2"></i>Registro de Diagnóstico
+          <i class="bi bi-clipboard-check me-2"></i>
+          {% if diagnostico and diagnostico.descripcion_diagnostico %}Editar Diagnóstico{% else %}Registro de Diagnóstico{% endif %}
         </h5>
       </div>
       <div class="card-body">
-        <div class="alert alert-info">
+        {% if equipo %}
+        <div class="alert alert-info mb-4">
           <i class="bi bi-info-circle me-2"></i>
-          <strong>Nota:</strong> Solo se muestran equipos que han sido asignados a técnicos y están pendientes de diagnóstico.
+          <strong>Equipo a diagnosticar:</strong> {{ equipo.tipo_equipo }} de {{ equipo.cliente.nombre }}
+          <br>
+          <strong>Problema reportado:</strong> {{ equipo.descripcion_problema }}
         </div>
+        
         <form method="post">
           {% csrf_token %}
           
-          <div class="row mb-4">
-            <div class="col-md-6">
-              <label for="equipo_id" class="form-label">Seleccionar Equipo Asignado</label>
-              {% if equipos %}
-              <select class="form-select" id="equipo_id" name="equipo_id" required>
-                <option value="" selected disabled>Seleccione un equipo...</option>
-                {% for equipo in equipos %}
-                <option value="{{ equipo.id }}">
-                  {{ equipo.nombre_cliente }} - {{ equipo.tipo_equipo }} (ID: {{ equipo.id }})
-                </option>
+          {% for field in form %}
+          <div class="mb-4">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% if field.errors %}
+              <div class="text-danger">
+                {% for error in field.errors %}
+                  {{ error }}
                 {% endfor %}
-              </select>
-              <div class="form-text">Equipos asignados pendientes de diagnóstico</div>
-              {% else %}
-              <div class="alert alert-warning">
-                <i class="bi bi-check-circle me-2"></i>
-                No hay equipos pendientes de diagnóstico. Todos los diagnósticos están completos o no hay equipos asignados.
               </div>
-              {% endif %}
-            </div>
+            {% endif %}
           </div>
+          {% endfor %}
           
-          <div class="mb-4">
-            <label for="diagnostico" class="form-label">Diagnóstico Técnico</label>
-            <textarea class="form-control" id="diagnostico" name="diagnostico" 
-                      rows="4" placeholder="Describa el problema encontrado..." required></textarea>
-            <div class="form-text">Detalle técnico del problema identificado</div>
-          </div>
-          
-          <div class="mb-4">
-            <label for="solucion" class="form-label">Solución Aplicada</label>
-            <textarea class="form-control" id="solucion" name="solucion" 
-                      rows="4" placeholder="Describa la solución implementada..." required></textarea>
-            <div class="form-text">Procedimientos técnicos realizados</div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-4">
-              <label for="tipo_solucion" class="form-label">Tipo de Solución</label>
-              <select class="form-select" id="tipo_solucion" name="tipo_solucion" required>
-                <option value="" selected disabled>Seleccione el tipo...</option>
-                <option value="Correctiva">Correctiva</option>
-                <option value="Preventiva">Preventiva</option>
-                <option value="Predictiva">Predictiva</option>
-              </select>
-              <div class="form-text">Clasificación de la solución aplicada</div>
-            </div>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-success btn-lg" {% if not equipos %}disabled{% endif %}>
-              <i class="bi bi-check-circle me-2"></i>Registrar Diagnóstico
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'diagnostico:asignar_diagnostico' %}" class="btn btn-secondary me-md-2">Cancelar</a>
+            <button type="submit" class="btn btn-success">
+              {% if diagnostico and diagnostico.descripcion_diagnostico %}Actualizar Diagnóstico{% else %}Registrar Diagnóstico{% endif %}
             </button>
           </div>
         </form>
-        {% if mensaje_exito %}
-        <div class="alert alert-success mt-4" role="alert">
-          <i class="bi bi-check-circle-fill me-2"></i>
-          <strong>¡Perfecto!</strong> {{ mensaje_exito }}
+        {% else %}
+        <div class="alert alert-warning text-center">
+          <i class="bi bi-exclamation-triangle display-4"></i>
+          <h4 class="mt-3">No hay equipos asignados</h4>
+          <p>No tienes equipos asignados para diagnosticar.</p>
+          <a href="{% url 'diagnostico:asignar_diagnostico' %}" class="btn btn-primary">
+            <i class="bi bi-person-plus me-1"></i>Asignar Equipo
+          </a>
         </div>
         {% endif %}
-        {% if mensaje_error %}
-        <div class="alert alert-danger mt-4" role="alert">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <strong>Error:</strong> {{ mensaje_error }}
-        </div>
+        
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-success mt-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+          </div>
+          {% endfor %}
         {% endif %}
-      </div>
-    </div>
-    <div class="mt-4">
-      <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-        <a href="{% url 'listado_diagnosticos' %}" class="btn btn-outline-secondary">
-          <i class="bi bi-list-ul me-1"></i>Volver a Diagnósticos
-        </a>
       </div>
     </div>
   </div>

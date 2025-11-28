@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Editar Equipo - {{ equipo.cliente.nombre }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-10 mx-auto">
+    <div class="card shadow">
+      <div class="card-header bg-warning text-dark">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-pencil me-2"></i>Editar Equipo y Cliente
+        </h5>
+      </div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          
+          <h5 class="card-title mb-4 text-primary">
+            <i class="bi bi-person me-2"></i>Datos del Cliente
+          </h5>
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label for="{{ cliente_form.nombre.id_for_label }}" class="form-label">Nombre del Cliente</label>
+              {{ cliente_form.nombre }}
+              {% if cliente_form.nombre.errors %}
+                <div class="text-danger">{{ cliente_form.nombre.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label for="{{ cliente_form.email.id_for_label }}" class="form-label">Email</label>
+              {{ cliente_form.email }}
+              {% if cliente_form.email.errors %}
+                <div class="text-danger">{{ cliente_form.email.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label for="{{ cliente_form.telefono.id_for_label }}" class="form-label">Teléfono</label>
+              {{ cliente_form.telefono }}
+              {% if cliente_form.telefono.errors %}
+                <div class="text-danger">{{ cliente_form.telefono.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label for="{{ cliente_form.direccion.id_for_label }}" class="form-label">Dirección</label>
+              {{ cliente_form.direccion }}
+              {% if cliente_form.direccion.errors %}
+                <div class="text-danger">{{ cliente_form.direccion.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <hr class="my-4">
+          
+          <h5 class="card-title mb-4 text-primary">
+            <i class="bi bi-laptop me-2"></i>Datos del Equipo
+          </h5>
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <label for="{{ equipo_form.tipo_equipo.id_for_label }}" class="form-label">Tipo de Equipo</label>
+              {{ equipo_form.tipo_equipo }}
+              {% if equipo_form.tipo_equipo.errors %}
+                <div class="text-danger">{{ equipo_form.tipo_equipo.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label for="{{ equipo_form.marca.id_for_label }}" class="form-label">Marca</label>
+              {{ equipo_form.marca }}
+              {% if equipo_form.marca.errors %}
+                <div class="text-danger">{{ equipo_form.marca.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label for="{{ equipo_form.modelo.id_for_label }}" class="form-label">Modelo</label>
+              {{ equipo_form.modelo }}
+              {% if equipo_form.modelo.errors %}
+                <div class="text-danger">{{ equipo_form.modelo.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="row mb-4">
+            <div class="col-md-8">
+              <label for="{{ equipo_form.descripcion_problema.id_for_label }}" class="form-label">Problema Reportado</label>
+              {{ equipo_form.descripcion_problema }}
+              {% if equipo_form.descripcion_problema.errors %}
+                <div class="text-danger">{{ equipo_form.descripcion_problema.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label for="{{ equipo_form.estado.id_for_label }}" class="form-label">Estado Actual</label>
+              {{ equipo_form.estado }}
+              {% if equipo_form.estado.errors %}
+                <div class="text-danger">{{ equipo_form.estado.errors }}</div>
+              {% endif %}
+              <div class="form-text">Actualice el estado del equipo según el proceso</div>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'recepcion:listado_equipos' %}" class="btn btn-secondary me-md-2">
+              <i class="bi bi-x-circle me-1"></i>Cancelar
+            </a>
+            <button type="submit" class="btn btn-warning">
+              <i class="bi bi-check-circle me-1"></i>Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Información de auditoría -->
+    <div class="card mt-4">
+      <div class="card-header bg-light">
+        <h6 class="card-title mb-0">
+          <i class="bi bi-info-circle me-2"></i>Información del Registro
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-1"><strong>Fecha de Recepción:</strong> {{ equipo.fecha_recepcion|date:"d/m/Y H:i" }}</p>
+            <p class="mb-1"><strong>Recepcionista:</strong> {{ equipo.recepcionista.username }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="mb-1"><strong>ID del Equipo:</strong> {{ equipo.id }}</p>
+            <p class="mb-1"><strong>Última Actualización:</strong> {% now "d/m/Y H:i" %}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

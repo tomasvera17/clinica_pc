@@ -28,51 +28,68 @@
     {% block extra_head %}{% endblock extra_head %}
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="{% url 'recepcion:registrar_equipo' %}">
-          <i class="bi bi-pc-display me-2"></i>Clínica PC INACAP
+        <a class="navbar-brand" href="{% url 'login:dashboard' %}">
+          <i class="bi bi-laptop"></i> Clínica del PC
         </a>
+        
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
+        
         <div class="collapse navbar-collapse" id="navbarNav">
-          <!-- Menú de Navegación -->
           <ul class="navbar-nav me-auto">
-            {% if request.session.autenticado %}
+            <!-- Enlaces directos a cada módulo -->
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'registrar_equipo' %}">
-                <i class="bi bi-clipboard-plus me-1"></i>Recepción
+              <a class="nav-link" href="{% url 'login:dashboard' %}">
+                <i class="bi bi-speedometer2 me-1"></i>Dashboard
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'asignar_diagnostico' %}">
-                <i class="bi bi-tools me-1"></i>Diagnóstico
+              <a class="nav-link" href="{% url 'recepcion:listado_equipos' %}">
+                <i class="bi bi-laptop me-1"></i>Recepción
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'verificar_estado' %}">
-                <i class="bi bi-clipboard-check me-1"></i>Entrega
+              <a class="nav-link" href="{% url 'diagnostico:listado_diagnosticos' %}">
+                <i class="bi bi-clipboard-check me-1"></i>Diagnóstico
               </a>
             </li>
-            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'entrega:listado_entregas' %}">
+                <i class="bi bi-check-circle me-1"></i>Entrega
+              </a>
+            </li>
           </ul>
           
-          <!-- Botón de Logout -->
-          <ul class="navbar-nav">
-            {% if request.session.autenticado %}
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-plus-circle me-1"></i>Acciones Rápidas
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'recepcion:registrar_equipo' %}">
+                  <i class="bi bi-laptop me-1"></i>Registrar Equipo
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'diagnostico:asignar_diagnostico' %}">
+                  <i class="bi bi-person-plus me-1"></i>Asignar Diagnóstico
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'entrega:reporte_entrega' %}">
+                  <i class="bi bi-clipboard-check me-1"></i>Registrar Entrega
+                </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'entrega:verificar_estado' %}">
+                  <i class="bi bi-search me-1"></i>Verificar Estado
+                </a></li>
+              </ul>
+            </li>
+            
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">
+              <a class="nav-link" href="{% url 'login:cerrar_sesion' %}">
                 <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
               </a>
             </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">
-                <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
-              </a>
-            </li>
-            {% endif %}
           </ul>
         </div>
       </div>
@@ -86,15 +103,6 @@
           </div>
         {% endfor %}
       {% endif %}
-
-      {% block breadcrumb %}
-      <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'login' %}">Inicio</a></li>
-          {% block breadcrumb_items %}{% endblock %}
-        </ol>
-      </nav>
-      {% endblock %}
       {% block page_title %}
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>{% block page_title_text %}{% endblock %}</h2>

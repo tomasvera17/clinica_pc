@@ -1,15 +1,10 @@
 {% extends 'base.html' %}
 
-{% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'listado_diagnosticos' %}">Diagnósticos</a></li>
-<li class="breadcrumb-item active">Verificar Estado</li>
-{% endblock %}
-
 {% block page_title_text %}Verificar Estado de Equipo{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-8">
+  <div class="col-md-10">
     <div class="card shadow">
       <div class="card-header bg-primary text-white">
         <h5 class="card-title mb-0">
@@ -45,21 +40,24 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                <p><strong>Cliente:</strong> {{ equipo.nombre_cliente }}</p>
+                <p><strong>Cliente:</strong> {{ equipo.cliente.nombre }}</p>
+                <p><strong>Email:</strong> {{ equipo.cliente.email }}</p>
+                <p><strong>Teléfono:</strong> {{ equipo.cliente.telefono }}</p>
                 <p><strong>Equipo:</strong> {{ equipo.tipo_equipo }}</p>
-                <p><strong>Problema Reportado:</strong> {{ equipo.problema }}</p>
+                <p><strong>Marca/Modelo:</strong> {{ equipo.marca }} {{ equipo.modelo }}</p>
               </div>
               <div class="col-md-6">
                 <p><strong>Estado Actual:</strong> 
-                  {% if equipo.estado_final %}
-                    <span class="badge bg-info">{{ equipo.estado_final }}</span>
-                  {% else %}
-                    <span class="badge bg-warning">En Proceso</span>
-                  {% endif %}
+                  <span class="badge 
+                    {% if equipo.estado == 'recibido' %}bg-secondary
+                    {% elif equipo.estado == 'en_diagnostico' %}bg-warning text-dark
+                    {% elif equipo.estado == 'reparado' %}bg-success
+                    {% else %}bg-info{% endif %}">
+                    {{ equipo.get_estado_display }}
+                  </span>
                 </p>
-                {% if equipo.observaciones %}
-                <p><strong>Observaciones:</strong> {{ equipo.observaciones }}</p>
-                {% endif %}
+                <p><strong>Problema Reportado:</strong> {{ equipo.descripcion_problema }}</p>
+                <p><strong>Fecha Recepción:</strong> {{ equipo.fecha_recepcion|date:"d/m/Y H:i" }}</p>
               </div>
             </div>
           </div>
@@ -71,25 +69,48 @@
             <h6 class="card-title mb-0">Diagnóstico Técnico</h6>
           </div>
           <div class="card-body">
-            <p><strong>Diagnóstico:</strong> {{ diagnostico.diagnostico }}</p>
-            <p><strong>Solución Aplicada:</strong> {{ diagnostico.solucion }}</p>
+            <p><strong>Diagnóstico:</strong> {{ diagnostico.descripcion_diagnostico }}</p>
+            <p><strong>Solución Aplicada:</strong> {{ diagnostico.solucion_propuesta }}</p>
             <p><strong>Tipo de Solución:</strong> 
               <span class="badge 
-                {% if diagnostico.tipo_solucion == 'Correctiva' %}bg-danger
-                {% elif diagnostico.tipo_solucion == 'Preventiva' %}bg-warning text-dark
+                {% if diagnostico.tipo_solucion == 'correctiva' %}bg-danger
+                {% elif diagnostico.tipo_solucion == 'preventiva' %}bg-warning text-dark
                 {% else %}bg-info{% endif %}">
-                {{ diagnostico.tipo_solucion }}
+                {{ diagnostico.get_tipo_solucion_display }}
               </span>
             </p>
+            <p><strong>Técnico:</strong> {{ diagnostico.tecnico.username }}</p>
+            <p><strong>Fecha Diagnóstico:</strong> {{ diagnostico.fecha_diagnostico|date:"d/m/Y H:i" }}</p>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if entrega %}
+        <div class="card mt-3">
+          <div class="card-header bg-success text-white">
+            <h6 class="card-title mb-0">Información de Entrega</h6>
+          </div>
+          <div class="card-body">
+            <p><strong>Fecha de Entrega:</strong> {{ entrega.fecha_entrega|date:"d/m/Y H:i" }}</p>
+            <p><strong>Entregado por:</strong> {{ entrega.entregado_por.username }}</p>
+            {% if entrega.notas_entrega %}
+            <p><strong>Observaciones:</strong> {{ entrega.notas_entrega }}</p>
+            {% endif %}
           </div>
         </div>
         {% endif %}
 
         <div class="mt-4">
           <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-            <a href="{% url 'comprobante_entrega' %}?nombre_cliente={{ equipo.nombre_cliente }}" class="btn btn-outline-primary">
+            {% if equipo.estado == 'entregado' %}
+            <a href="{% url 'entrega:comprobante_entrega' %}?nombre_cliente={{ equipo.cliente.nombre }}" class="btn btn-outline-primary">
               <i class="bi bi-receipt me-1"></i>Generar Comprobante
             </a>
+            {% elif equipo.estado == 'reparado' %}
+            <a href="{% url 'entrega:reporte_entrega' %}" class="btn btn-outline-success">
+              <i class="bi bi-clipboard-check me-1"></i>Registrar Entrega
+            </a>
+            {% endif %}
           </div>
         </div>
 
@@ -99,17 +120,6 @@
           No se encontró ningún equipo para el cliente "{{ nombre_buscado }}"
         </div>
         {% endif %}
-      </div>
-    </div>
-
-    <div class="mt-4">
-      <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-        <a href="{% url 'reporte_entrega' %}" class="btn btn-outline-success me-md-2">
-          <i class="bi bi-clipboard-data me-1"></i>Registrar Estado de Entrega
-        </a>
-        <a href="{% url 'listado_diagnosticos' %}" class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left me-1"></i>Volver a Diagnósticos
-        </a>
       </div>
     </div>
   </div>

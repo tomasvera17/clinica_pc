@@ -15,10 +15,14 @@ class ClienteForm(forms.ModelForm):
 class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
-        fields = ['tipo_equipo', 'marca', 'modelo', 'descripcion_problema']
+        fields = ['tipo_equipo', 'marca', 'modelo', 'descripcion_problema', 'estado']
         widgets = {
-            'tipo_equipo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tipo de equipo (ej: Laptop, Smartphone)'}),
+            'tipo_equipo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Laptop, Desktop, Tablet, etc.'}),
             'marca': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Marca del equipo'}),
             'modelo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Modelo del equipo'}),
             'descripcion_problema': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describa el problema reportado por el cliente'}),
+            'estado': forms.Select(attrs={'class': 'form-select'}),
+        }
+        labels = {
+            'descripcion_problema': 'Problema Reportado',
         }

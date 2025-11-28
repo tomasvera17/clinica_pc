@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 
-{% block breadcrumb_items %}
-<li class="breadcrumb-item active">Registrar Equipo</li>
-{% endblock %}
-
 {% block page_title_text %}Registrar Nuevo Equipo{% endblock %}
 
 {% block content %}
@@ -98,33 +94,6 @@
         {% endif %}
       </div>
     </div>
-    
-    <div class="row mt-4">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">
-              <i class="bi bi-list-ul me-2"></i>Ver Equipos
-            </h5>
-            <a href="{% url 'recepcion:listado_equipos' %}" class="btn btn-outline-primary">
-              Ver Listado Completo
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">
-              <i class="bi bi-tools me-2"></i>Diagnosticar
-            </h5>
-            <a href="#" class="btn btn-outline-success">
-              Ir a DiagnÃ³stico
-            </a>
-          </div>
-        </div>
-      </div>
-    </div> 
   </div>
 </div>
 {% endblock %}
